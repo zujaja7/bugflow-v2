@@ -3,16 +3,37 @@ import "./App.css";
 import BugCard from "./BugCard";
 import { useState, useEffect } from "react";
 
+type Severity = "Highest" | "High" | "Medium" | "Low";
+
+type Priority = "P1" | "P2" | "P3" | "P4";
+
+type Status =
+  | "New"
+  | "Open"
+  | "Assigned"
+  | "Fixed"
+  | "Verified"
+  | "Closed"
+  | "Reopened";
+
+type Estimate =
+  | "0.25 hr"
+  | "0.5 hr"
+  | "1 hr"
+  | "2 hrs"
+  | "3 hrs"
+  | "4 hrs"
+  | "5 hrs";
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   interface Bug {
     id: number;
     bugTitle: string;
     bugDescription: string;
-    bugSeverity: string;
-    bugPriority: string;
-    bugStatus: string;
-    bugEstimate: string;
+    bugSeverity: Severity;
+    bugPriority: Priority | "";
+    bugEstimate: Estimate | "";
+    bugStatus: Status;
     lastUpdated: number;
     lastUpdatedDisplay: string;
   }
@@ -21,7 +42,7 @@ function App() {
 
     if (savedBugs) {
       try {
-        return JSON.parse(savedBugs);
+        return JSON.parse(savedBugs) as Bug[];
       } catch (error) {
         console.error("Failed to parse saved bugs:", error);
         return [];
@@ -32,25 +53,26 @@ function App() {
   });
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [severity, setSeverity] = useState("");
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("");
-  const [estimate, setEstimate] = useState("");
+  const [severity, setSeverity] = useState<Severity | "">("");
+  const [priority, setPriority] = useState<Priority | "">("");
+  const [status, setStatus] = useState<Status | "">("");
+  const [estimate, setEstimate] = useState<Estimate | "">("");
   const [submitted, setSubmitted] = useState(false);
   const [editingBugId, setEditingBugId] = useState<number | null>(null);
   const [searchText, setSearchText] = useState("");
-  const [severityFilter, setSeverityFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [priorityFilter, setPriorityFilter] = useState("All");
-  const openCount = bugs.filter((bug) => bug.bugStatus === "Open").length;
-  const newCount = bugs.filter((bug) => bug.bugStatus === "New").length;
-  const verifiedCount = bugs.filter(
-    (bug) => bug.bugStatus === "Verified",
-  ).length;
-  const closedCount = bugs.filter((bug) => bug.bugStatus === "Closed").length;
-  const reopenedCount = bugs.filter(
-    (bug) => bug.bugStatus === "Reopened",
-  ).length;
+  const [severityFilter, setSeverityFilter] = useState<Severity | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<Status | "All">("All");
+  const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
+  const getStatusCount = (status: Status) => {
+    return bugs.filter((bug) => bug.bugStatus === status).length;
+  };
+  const openCount = getStatusCount("Open");
+  const fixedCount = getStatusCount("Fixed");
+  const newCount = getStatusCount("New");
+  const assignedCount = getStatusCount("Assigned");
+  const verifiedCount = getStatusCount("Verified");
+  const closedCount = getStatusCount("Closed");
+  const reopenedCount = getStatusCount("Reopened");
   const totalBugs = bugs.length;
   const lastUpdatedBug = [...bugs].sort(
     (a, b) => b.lastUpdated - a.lastUpdated,
@@ -93,11 +115,6 @@ function App() {
   };
 
   const lastUpdatedText = formatLastUpdated(lastUpdatedBug?.lastUpdated);
-
-  const assignedCount = bugs.filter(
-    (bug) => bug.bugStatus === "Assigned",
-  ).length;
-  const fixedCount = bugs.filter((bug) => bug.bugStatus === "Fixed").length;
 
   useEffect(() => {
     localStorage.setItem("bugs", JSON.stringify(bugs));
@@ -240,7 +257,9 @@ function App() {
               id="severity"
               className="dropdown"
               value={severityFilter}
-              onChange={(e) => setSeverityFilter(e.target.value)}
+              onChange={(e) =>
+                setSeverityFilter(e.target.value as Severity | "All")
+              }
             >
               <option value="All">All</option>
               <option value="Highest">Highest</option>
@@ -256,7 +275,9 @@ function App() {
               id="priority"
               className="dropdown"
               value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
+              onChange={(e) =>
+                setPriorityFilter(e.target.value as Priority | "All")
+              }
             >
               <option value="All">All</option>
               <option value="P1">P1</option>
@@ -272,7 +293,9 @@ function App() {
               id="status"
               className="dropdown"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) =>
+                setStatusFilter(e.target.value as Status | "All")
+              }
             >
               <option value="All">All</option>
               <option value="New">New</option>
@@ -381,7 +404,7 @@ function App() {
               <div className="property-field">
                 <label>Severity</label>
                 <select
-                  onChange={(e) => setSeverity(e.target.value)}
+                  onChange={(e) => setSeverity(e.target.value as Severity)}
                   value={severity}
                 >
                   <option value="" disabled hidden>
@@ -399,7 +422,7 @@ function App() {
               <div className="property-field">
                 <label>Priority</label>
                 <select
-                  onChange={(e) => setPriority(e.target.value)}
+                  onChange={(e) => setPriority(e.target.value as Priority)}
                   value={priority}
                 >
                   <option value="" disabled hidden>
@@ -414,7 +437,7 @@ function App() {
               <div className="property-field">
                 <label>Status</label>
                 <select
-                  onChange={(e) => setStatus(e.target.value)}
+                  onChange={(e) => setStatus(e.target.value as Status)}
                   value={status}
                 >
                   <option value="" disabled hidden>
@@ -436,7 +459,7 @@ function App() {
               <div className="property-field">
                 <label>Estimate</label>
                 <select
-                  onChange={(e) => setEstimate(e.target.value)}
+                  onChange={(e) => setEstimate(e.target.value as Estimate)}
                   value={estimate}
                 >
                   <option value="" disabled hidden>

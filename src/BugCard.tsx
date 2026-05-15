@@ -1,7 +1,17 @@
+type Severity = "Highest" | "High" | "Medium" | "Low";
+type Status =
+  | "New"
+  | "Open"
+  | "Assigned"
+  | "Fixed"
+  | "Verified"
+  | "Closed"
+  | "Reopened";
+
 interface BugCardProps {
   bugTitle: string;
-  bugSeverity: string;
-  bugStatus: string;
+  bugSeverity: Severity;
+  bugStatus: Status;
   bugDescription: string;
   lastUpdatedDisplay: string;
   onEdit: () => void;
