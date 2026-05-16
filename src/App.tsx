@@ -40,7 +40,7 @@ function App() {
   const fixedCount = getStatusCount("Fixed");
   const newCount = getStatusCount("New");
   const assignedCount = getStatusCount("Assigned");
-  const verifiedCount = getStatusCount("Verified");
+
   const closedCount = getStatusCount("Closed");
   const reopenedCount = getStatusCount("Reopened");
   const totalBugs = bugs.length;
