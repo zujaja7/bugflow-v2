@@ -1,17 +1,11 @@
 import "./App.css";
-const STORAGE_KEY = "bugs-v2";
+import { useEffect, useState } from "react";
 import BugCard from "./BugCard";
-import { useState, useEffect } from "react";
-
 import type { Bug, Estimate, Priority, Severity, Status } from "./types";
-function App() {
-  const getBugTimestampLabel = (bug: Bug) => {
-    if (bug.createdAt === bug.updatedAt) {
-      return `Created ${formatLastUpdated(bug.createdAt)}`;
-    }
+import { formatLastUpdated, getBugTimestampLabel } from "./dateUtils";
+const STORAGE_KEY = "bugs-v2";
 
-    return `Updated ${formatLastUpdated(bug.updatedAt)}`;
-  };
+function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bugs, setBugs] = useState<Bug[]>(() => {
     const savedBugs = localStorage.getItem(STORAGE_KEY);
@@ -46,47 +40,11 @@ function App() {
   const fixedCount = getStatusCount("Fixed");
   const newCount = getStatusCount("New");
   const assignedCount = getStatusCount("Assigned");
-  const verifiedCount = getStatusCount("Verified");
+
   const closedCount = getStatusCount("Closed");
   const reopenedCount = getStatusCount("Reopened");
   const totalBugs = bugs.length;
   const lastUpdatedBug = [...bugs].sort((a, b) => b.updatedAt - a.updatedAt)[0];
-
-  const formatLastUpdated = (timestamp: number | undefined) => {
-    if (!timestamp) {
-      return "No updates yet";
-    }
-
-    const updatedDate = new Date(timestamp);
-    const today = new Date();
-
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-
-    const isToday = updatedDate.toDateString() === today.toDateString();
-    const isYesterday = updatedDate.toDateString() === yesterday.toDateString();
-
-    const time = updatedDate.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    if (isToday) {
-      return `Today, ${time}`;
-    }
-
-    if (isYesterday) {
-      return `Yesterday, ${time}`;
-    }
-
-    const date = updatedDate.toLocaleDateString([], {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    return `${date}, ${time}`;
-  };
 
   const lastUpdatedText = formatLastUpdated(lastUpdatedBug?.updatedAt);
   useEffect(() => {
@@ -101,6 +59,12 @@ function App() {
     setEstimate("");
     setSubmitted(false);
     setEditingBugId(null);
+  };
+  const handleResetFilters = () => {
+    setSearchText("");
+    setSeverityFilter("All");
+    setPriorityFilter("All");
+    setStatusFilter("All");
   };
   const handleSaveBug = () => {
     const now = new Date();
@@ -273,6 +237,11 @@ function App() {
               <option value="Reopened">Reopened</option>
             </select>
           </div>
+
+          <button className="reset-filters-button" onClick={handleResetFilters}>
+            Reset filters
+          </button>
+
           <h3>Quick stats</h3>
           <div className="stat-row">
             <span>Total Bugs</span>
@@ -294,10 +263,7 @@ function App() {
             <span>Fixed</span>
             <span>{fixedCount}</span>
           </div>
-          <div className="stat-row">
-            <span>Verified</span>
-            <span>{verifiedCount}</span>
-          </div>
+
           <div className="stat-row">
             <span>Closed</span>
             <span>{closedCount}</span>
@@ -318,20 +284,24 @@ function App() {
         <div className="recent-issues-panel">
           <h2 className="recent-issues-title">RECENT ISSUES</h2>
 
-          {[...filteredBugs]
-            .sort((a, b) => b.updatedAt - a.updatedAt)
-            .map((bug) => (
-              <BugCard
-                key={bug.id}
-                bugTitle={bug.bugTitle}
-                bugSeverity={bug.bugSeverity}
-                bugStatus={bug.bugStatus}
-                bugDescription={bug.bugDescription}
-                lastUpdatedDisplay={getBugTimestampLabel(bug)}
-                onEdit={() => handleEditBug(bug)}
-                onDelete={() => handleDeleteBug(bug.id)}
-              />
-            ))}
+          {filteredBugs.length === 0 ? (
+            <p className="empty-state">No results found</p>
+          ) : (
+            [...filteredBugs]
+              .sort((a, b) => b.updatedAt - a.updatedAt)
+              .map((bug) => (
+                <BugCard
+                  key={bug.id}
+                  bugTitle={bug.bugTitle}
+                  bugSeverity={bug.bugSeverity}
+                  bugStatus={bug.bugStatus}
+                  bugDescription={bug.bugDescription}
+                  lastUpdatedDisplay={getBugTimestampLabel(bug)}
+                  onEdit={() => handleEditBug(bug)}
+                  onDelete={() => handleDeleteBug(bug.id)}
+                />
+              ))
+          )}
         </div>
       </div>
 
