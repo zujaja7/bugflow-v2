@@ -1,73 +1,94 @@
-# React + TypeScript + Vite
+# BugFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Track issues, organize fixes, ship cleaner releases.**
 
-Currently, two official plugins are available:
+A fully functional bug tracker built from scratch in React + TypeScript. Built as a learning project during a career transition from Software QA Engineering to Development.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Live Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+[bugflow-v2.vercel.app](https://bugflow-v2-hd7vhsowm-zujaja-s-projects.vercel.app)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Create bugs** — title, description, severity, priority, status, estimate
+- **Edit bugs** — modal pre-fills with existing data, updates in place
+- **Delete bugs** — removes from list instantly
+- **Search** — real-time filtering by title and description
+- **Filter** — filter by severity, priority, and status simultaneously
+- **Sort** — most recently updated bug always appears first
+- **Persist** — bugs saved to localStorage, survive page refresh
+- **Stats** — live bug counts by status in the Overview panel
+- **Responsive** — works on mobile and desktop
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech Stack
+
+| Layer       | Technology                 |
+| ----------- | -------------------------- |
+| Frontend    | React 18                   |
+| Language    | TypeScript                 |
+| Build tool  | Vite                       |
+| Styling     | CSS (custom, no framework) |
+| Persistence | localStorage               |
+| Deployment  | Vercel                     |
+
+---
+
+## Project Structure
+
+```
+src/
+├── App.tsx          # Main component — state, handlers, layout
+├── BugCard.tsx      # Reusable bug card component
+├── types.ts         # TypeScript interfaces and union types
+├── dateUtils.ts     # Timestamp formatting utilities
+├── App.css          # All styles
+└── main.tsx         # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## What I Learned
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- React fundamentals — components, props, state, controlled inputs
+- `useState` and `useEffect` hooks
+- Lifting state up — passing functions as props
+- TypeScript — interfaces, union types, typed state, typed props
+- localStorage persistence with JSON serialization
+- Array methods — `.map()`, `.filter()`, `.sort()`
+- Conditional rendering
+- Component decomposition
+- Git workflow — branching, committing, merging
+- Deployment with Vercel
+
+---
+
+## Run Locally
+
+```bash
+git clone https://github.com/zujaja7/bugflow-v2
+cd bugflow-v2
+npm install
+npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+---
+
+## What's Next
+
+- Backend API with Node.js + Express
+- MongoDB database (replace localStorage)
+- Playwright automated tests
+- GitHub Actions CI/CD pipeline
+- TypeScript depth — typed hooks, reusable types
+
+---
+
+_Built by a Software QA Engineer learning to build what she used to test._
