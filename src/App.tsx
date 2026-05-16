@@ -40,7 +40,7 @@ function App() {
   const fixedCount = getStatusCount("Fixed");
   const newCount = getStatusCount("New");
   const assignedCount = getStatusCount("Assigned");
-  const verifiedCount = getStatusCount("Verified");
+
   const closedCount = getStatusCount("Closed");
   const reopenedCount = getStatusCount("Reopened");
   const totalBugs = bugs.length;
@@ -59,6 +59,12 @@ function App() {
     setEstimate("");
     setSubmitted(false);
     setEditingBugId(null);
+  };
+  const handleResetFilters = () => {
+    setSearchText("");
+    setSeverityFilter("All");
+    setPriorityFilter("All");
+    setStatusFilter("All");
   };
   const handleSaveBug = () => {
     const now = new Date();
@@ -231,6 +237,11 @@ function App() {
               <option value="Reopened">Reopened</option>
             </select>
           </div>
+
+          <button className="reset-filters-button" onClick={handleResetFilters}>
+            Reset filters
+          </button>
+
           <h3>Quick stats</h3>
           <div className="stat-row">
             <span>Total Bugs</span>
@@ -252,10 +263,7 @@ function App() {
             <span>Fixed</span>
             <span>{fixedCount}</span>
           </div>
-          <div className="stat-row">
-            <span>Verified</span>
-            <span>{verifiedCount}</span>
-          </div>
+
           <div className="stat-row">
             <span>Closed</span>
             <span>{closedCount}</span>
@@ -276,20 +284,24 @@ function App() {
         <div className="recent-issues-panel">
           <h2 className="recent-issues-title">RECENT ISSUES</h2>
 
-          {[...filteredBugs]
-            .sort((a, b) => b.updatedAt - a.updatedAt)
-            .map((bug) => (
-              <BugCard
-                key={bug.id}
-                bugTitle={bug.bugTitle}
-                bugSeverity={bug.bugSeverity}
-                bugStatus={bug.bugStatus}
-                bugDescription={bug.bugDescription}
-                lastUpdatedDisplay={getBugTimestampLabel(bug)}
-                onEdit={() => handleEditBug(bug)}
-                onDelete={() => handleDeleteBug(bug.id)}
-              />
-            ))}
+          {filteredBugs.length === 0 ? (
+            <p className="empty-state">No results found</p>
+          ) : (
+            [...filteredBugs]
+              .sort((a, b) => b.updatedAt - a.updatedAt)
+              .map((bug) => (
+                <BugCard
+                  key={bug.id}
+                  bugTitle={bug.bugTitle}
+                  bugSeverity={bug.bugSeverity}
+                  bugStatus={bug.bugStatus}
+                  bugDescription={bug.bugDescription}
+                  lastUpdatedDisplay={getBugTimestampLabel(bug)}
+                  onEdit={() => handleEditBug(bug)}
+                  onDelete={() => handleDeleteBug(bug.id)}
+                />
+              ))
+          )}
         </div>
       </div>
 
