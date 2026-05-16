@@ -1,44 +1,20 @@
 import "./App.css";
-
+const STORAGE_KEY = "bugs-v2";
 import BugCard from "./BugCard";
 import { useState, useEffect } from "react";
 
-type Severity = "Highest" | "High" | "Medium" | "Low";
-
-type Priority = "P1" | "P2" | "P3" | "P4";
-
-type Status =
-  | "New"
-  | "Open"
-  | "Assigned"
-  | "Fixed"
-  | "Verified"
-  | "Closed"
-  | "Reopened";
-
-type Estimate =
-  | "0.25 hr"
-  | "0.5 hr"
-  | "1 hr"
-  | "2 hrs"
-  | "3 hrs"
-  | "4 hrs"
-  | "5 hrs";
+import type { Bug, Estimate, Priority, Severity, Status } from "./types";
 function App() {
+  const getBugTimestampLabel = (bug: Bug) => {
+    if (bug.createdAt === bug.updatedAt) {
+      return `Created ${formatLastUpdated(bug.createdAt)}`;
+    }
+
+    return `Updated ${formatLastUpdated(bug.updatedAt)}`;
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
-  interface Bug {
-    id: number;
-    bugTitle: string;
-    bugDescription: string;
-    bugSeverity: Severity;
-    bugPriority: Priority | "";
-    bugEstimate: Estimate | "";
-    bugStatus: Status;
-    lastUpdated: number;
-    lastUpdatedDisplay: string;
-  }
   const [bugs, setBugs] = useState<Bug[]>(() => {
-    const savedBugs = localStorage.getItem("bugs");
+    const savedBugs = localStorage.getItem(STORAGE_KEY);
 
     if (savedBugs) {
       try {
@@ -74,9 +50,7 @@ function App() {
   const closedCount = getStatusCount("Closed");
   const reopenedCount = getStatusCount("Reopened");
   const totalBugs = bugs.length;
-  const lastUpdatedBug = [...bugs].sort(
-    (a, b) => b.lastUpdated - a.lastUpdated,
-  )[0];
+  const lastUpdatedBug = [...bugs].sort((a, b) => b.updatedAt - a.updatedAt)[0];
 
   const formatLastUpdated = (timestamp: number | undefined) => {
     if (!timestamp) {
@@ -114,10 +88,9 @@ function App() {
     return `${date}, ${time}`;
   };
 
-  const lastUpdatedText = formatLastUpdated(lastUpdatedBug?.lastUpdated);
-
+  const lastUpdatedText = formatLastUpdated(lastUpdatedBug?.updatedAt);
   useEffect(() => {
-    localStorage.setItem("bugs", JSON.stringify(bugs));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(bugs));
   }, [bugs]);
   const resetForm = () => {
     setTitle("");
@@ -147,11 +120,7 @@ function App() {
             bugPriority: priority,
             bugStatus: status,
             bugEstimate: estimate,
-            lastUpdated: now.getTime(), // number for sorting
-            lastUpdatedDisplay: now.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
+            updatedAt: now.getTime(),
           };
         }
         return bug;
@@ -166,11 +135,8 @@ function App() {
         bugPriority: priority,
         bugStatus: status,
         bugEstimate: estimate,
-        lastUpdated: now.getTime(),
-        lastUpdatedDisplay: now.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        createdAt: now.getTime(),
+        updatedAt: now.getTime(),
       };
       setBugs([...bugs, newBug]);
     }
@@ -353,7 +319,7 @@ function App() {
           <h2 className="recent-issues-title">RECENT ISSUES</h2>
 
           {[...filteredBugs]
-            .sort((a, b) => b.lastUpdated - a.lastUpdated)
+            .sort((a, b) => b.updatedAt - a.updatedAt)
             .map((bug) => (
               <BugCard
                 key={bug.id}
@@ -361,7 +327,7 @@ function App() {
                 bugSeverity={bug.bugSeverity}
                 bugStatus={bug.bugStatus}
                 bugDescription={bug.bugDescription}
-                lastUpdatedDisplay={bug.lastUpdatedDisplay}
+                lastUpdatedDisplay={getBugTimestampLabel(bug)}
                 onEdit={() => handleEditBug(bug)}
                 onDelete={() => handleDeleteBug(bug.id)}
               />

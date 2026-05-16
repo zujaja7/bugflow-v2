@@ -1,12 +1,4 @@
-type Severity = "Highest" | "High" | "Medium" | "Low";
-type Status =
-  | "New"
-  | "Open"
-  | "Assigned"
-  | "Fixed"
-  | "Verified"
-  | "Closed"
-  | "Reopened";
+import type { Severity, Status } from "./types";
 
 interface BugCardProps {
   bugTitle: string;
@@ -41,7 +33,7 @@ function BugCard({
         >
           {bugStatus}
         </span>
-        <span className="updated-time">Updated {lastUpdatedDisplay}</span>
+        <span className="updated-time">{lastUpdatedDisplay}</span>
       </div>
       <h3 className="issue-title">{bugTitle}</h3>
       <p className="issue-description">{bugDescription}</p>
