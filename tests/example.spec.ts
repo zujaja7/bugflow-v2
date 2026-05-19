@@ -100,3 +100,62 @@ test("search a bug", async ({ page }) => {
   await expect(page.getByText("Bug 2")).toBeVisible();
   await expect(page.getByText("Bug 1")).not.toBeVisible();
 });
+
+test("filter bugs by severity and status", async ({ page }) => {
+  await createBug(
+    page,
+    "High open bug",
+    "Visible after filtering",
+    "High",
+    "P1",
+    "Open",
+    "1 hr",
+  );
+
+  await createBug(
+    page,
+    "Low fixed bug",
+    "Should be hidden",
+    "Low",
+    "P4",
+    "Fixed",
+    "2 hrs",
+  );
+
+  await page.locator("#severity").selectOption("High");
+  await page.locator("#status").selectOption("Open");
+
+  await expect(page.getByText("High open bug")).toBeVisible();
+  await expect(page.getByText("Low fixed bug")).not.toBeVisible();
+});
+
+test("reset filters shows all bugs again", async ({ page }) => {
+  await createBug(
+    page,
+    "High bug",
+    "Description",
+    "High",
+    "P1",
+    "Open",
+    "1 hr",
+  );
+  await createBug(
+    page,
+    "Low bug",
+    "Description",
+    "Low",
+    "P4",
+    "Fixed",
+    "2 hrs",
+  );
+
+  await page.locator("#severity").selectOption("High");
+
+  await expect(page.getByText("High bug")).toBeVisible();
+  await expect(page.getByText("Low bug")).not.toBeVisible();
+
+  await page.getByRole("button", { name: "Reset filters" }).click();
+
+  await expect(page.getByText("High bug")).toBeVisible();
+  await expect(page.getByText("Low bug")).toBeVisible();
+});
