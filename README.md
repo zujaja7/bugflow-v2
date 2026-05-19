@@ -8,21 +8,22 @@ A fully functional bug tracker built from scratch in React + TypeScript. Built a
 
 ## Live Demo
 
-[bugflow-v2.vercel.app](https://bugflow-v2-hd7vhsowm-zujaja-s-projects.vercel.app)
+[bugflow-v2.vercel.app](https://bugflow-v2.vercel.app)
 
 ---
 
 ## Features
 
 - **Create bugs** — title, description, severity, priority, status, estimate
-- **Edit bugs** — modal pre-fills with existing data, updates in place
-- **Delete bugs** — removes from list instantly
+- **Edit bugs** — modal pre-fills with existing data and updates in place
+- **Delete bugs** — removes bugs from the list instantly
 - **Search** — real-time filtering by title and description
 - **Filter** — filter by severity, priority, and status simultaneously
-- **Sort** — most recently updated bug always appears first
-- **Persist** — bugs saved to localStorage, survive page refresh
+- **Sort** — most recently updated bug appears first
+- **Persist** — bugs are saved to localStorage and survive page refresh
 - **Stats** — live bug counts by status in the Overview panel
-- **Responsive** — works on mobile and desktop
+- **Reset filters** — clears search and filter selections
+- **Responsive UI** — works on mobile and desktop
 
 ---
 
@@ -30,41 +31,29 @@ A fully functional bug tracker built from scratch in React + TypeScript. Built a
 
 | Layer       | Technology                 |
 | ----------- | -------------------------- |
-| Frontend    | React 18                   |
+| Frontend    | React                      |
 | Language    | TypeScript                 |
 | Build tool  | Vite                       |
 | Styling     | CSS (custom, no framework) |
 | Persistence | localStorage               |
+| Testing     | Playwright                 |
+| CI          | GitHub Actions             |
 | Deployment  | Vercel                     |
 
 ---
 
 ## Project Structure
 
-```
+```text
 src/
 ├── App.tsx          # Main component — state, handlers, layout
 ├── BugCard.tsx      # Reusable bug card component
 ├── types.ts         # TypeScript interfaces and union types
 ├── dateUtils.ts     # Timestamp formatting utilities
-├── App.css          # All styles
+├── options.ts       # Shared dropdown option values
+├── App.css          # App styling
 └── main.tsx         # Entry point
 ```
-
----
-
-## What I Learned
-
-- React fundamentals — components, props, state, controlled inputs
-- `useState` and `useEffect` hooks
-- Lifting state up — passing functions as props
-- TypeScript — interfaces, union types, typed state, typed props
-- localStorage persistence with JSON serialization
-- Array methods — `.map()`, `.filter()`, `.sort()`
-- Conditional rendering
-- Component decomposition
-- Git workflow — branching, committing, merging
-- Deployment with Vercel
 
 ---
 
@@ -77,7 +66,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173)
+Open [http://localhost:5173](http://localhost:5173).
 
 ---
 
@@ -89,14 +78,45 @@ Run tests:
 
 ```bash
 npx playwright test
+```
+
+Run production build:
+
+```bash
+npm run build
+```
+
+---
+
+## CI/CD
+
+This project uses GitHub Actions to run build and Playwright tests on pushes and pull requests.
+
+---
+
+## What I Learned
+
+- React fundamentals — components, props, state, and controlled inputs
+- `useState` and `useEffect` hooks
+- Passing functions as props
+- TypeScript interfaces, union types, typed state, and typed props
+- localStorage persistence with JSON serialization
+- Array methods — `.map()`, `.filter()`, `.sort()`
+- Conditional rendering and empty states
+- Component decomposition and shared utility files
+- End-to-end testing with Playwright
+- Git workflow — branching, committing, merging
+- CI checks with GitHub Actions
+- Deployment with Vercel
+
+---
 
 ## What's Next
 
 - Backend API with Node.js + Express
-- MongoDB database (replace localStorage)
-- GitHub Actions CI/CD pipeline
+- MongoDB database to replace localStorage
+- Deeper CI/CD workflow and deployment automation
 
 ---
 
 _Built by a Software QA Engineer learning to build what she used to test._
-```
