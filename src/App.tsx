@@ -3,6 +3,12 @@ import { useEffect, useState } from "react";
 import BugCard from "./BugCard";
 import type { Bug, Estimate, Priority, Severity, Status } from "./types";
 import { formatLastUpdated, getBugTimestampLabel } from "./dateUtils";
+import {
+  estimateOptions,
+  priorityOptions,
+  severityOptions,
+  statusOptions,
+} from "./options";
 const STORAGE_KEY = "bugs-v2";
 
 function App() {
@@ -192,10 +198,11 @@ function App() {
               }
             >
               <option value="All">All</option>
-              <option value="Highest">Highest</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
+              {severityOptions.map((severityOption) => (
+                <option key={severityOption} value={severityOption}>
+                  {severityOption}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -210,10 +217,11 @@ function App() {
               }
             >
               <option value="All">All</option>
-              <option value="P1">P1</option>
-              <option value="P2">P2</option>
-              <option value="P3">P3</option>
-              <option value="P4">P4</option>
+              {priorityOptions.map((priorityOption) => (
+                <option key={priorityOption} value={priorityOption}>
+                  {priorityOption}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -228,13 +236,11 @@ function App() {
               }
             >
               <option value="All">All</option>
-              <option value="New">New</option>
-              <option value="Open">Open</option>
-              <option value="Assigned">Assigned</option>
-              <option value="Fixed">Fixed</option>
-              <option value="Verified">Verified</option>
-              <option value="Closed">Closed</option>
-              <option value="Reopened">Reopened</option>
+              {statusOptions.map((statusOption) => (
+                <option key={statusOption} value={statusOption}>
+                  {statusOption}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -329,6 +335,7 @@ function App() {
               <label>Description</label>
               <textarea
                 className="description-area"
+                placeholder="Enter your Bug Description"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
               ></textarea>
@@ -338,54 +345,57 @@ function App() {
             </div>
             <div className="bug-properties">
               <div className="property-field">
-                <label>Severity</label>
+                <label htmlFor="modal-severity">Severity</label>
                 <select
+                  id="modal-severity"
                   onChange={(e) => setSeverity(e.target.value as Severity)}
                   value={severity}
                 >
                   <option value="" disabled hidden>
                     Select Severity
                   </option>
-                  <option value="Highest">Highest</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
+                  {severityOptions.map((severityOption) => (
+                    <option key={severityOption} value={severityOption}>
+                      {severityOption}
+                    </option>
+                  ))}
                 </select>
                 {submitted && !severity && (
                   <p className="error">* Severity is required</p>
                 )}
               </div>
               <div className="property-field">
-                <label>Priority</label>
+                <label htmlFor="modal-priority">Priority</label>
                 <select
+                  id="modal-priority"
                   onChange={(e) => setPriority(e.target.value as Priority)}
                   value={priority}
                 >
                   <option value="" disabled hidden>
                     Select Priority
                   </option>
-                  <option value="P1">P1</option>
-                  <option value="P2">P2</option>
-                  <option value="P3">P3</option>
-                  <option value="P4">P4</option>
+                  {priorityOptions.map((priorityOption) => (
+                    <option key={priorityOption} value={priorityOption}>
+                      {priorityOption}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="property-field">
-                <label>Status</label>
+                <label htmlFor="modal-status">Status</label>
                 <select
+                  id="modal-status"
                   onChange={(e) => setStatus(e.target.value as Status)}
                   value={status}
                 >
                   <option value="" disabled hidden>
                     Select Status
                   </option>
-                  <option value="New">New</option>
-                  <option value="Open">Open</option>
-                  <option value="Assigned">Assigned</option>
-                  <option value="Fixed">Fixed</option>
-                  <option value="Verified">Verified</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Reopened">Reopened</option>
+                  {statusOptions.map((statusOption) => (
+                    <option key={statusOption} value={statusOption}>
+                      {statusOption}
+                    </option>
+                  ))}
                 </select>
                 {submitted && !status && (
                   <p className="error">* Status is required</p>
@@ -393,21 +403,20 @@ function App() {
               </div>
 
               <div className="property-field">
-                <label>Estimate</label>
+                <label htmlFor="modal-estimate">Estimate</label>
                 <select
+                  id="modal-estimate"
                   onChange={(e) => setEstimate(e.target.value as Estimate)}
                   value={estimate}
                 >
                   <option value="" disabled hidden>
                     Select Estimate
                   </option>
-                  <option value="0.25 hr">Quarter hour</option>
-                  <option value="0.5 hr">Half an hour</option>
-                  <option value="1 hr">1 hour</option>
-                  <option value="2 hrs">2 hours</option>
-                  <option value="3 hrs">3 hours</option>
-                  <option value="4 hrs">4 hours</option>
-                  <option value="5 hrs">5 hours</option>
+                  {estimateOptions.map((estimateOption) => (
+                    <option key={estimateOption} value={estimateOption}>
+                      {estimateOption}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
