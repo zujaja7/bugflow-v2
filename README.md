@@ -81,14 +81,22 @@ Open [http://localhost:5173](http://localhost:5173)
 
 ---
 
+## Testing
+
+This project includes Playwright end-to-end tests for creating, editing, deleting, searching, filtering, resetting filters, and empty states.
+
+Run tests:
+
+```bash
+npx playwright test
+
 ## What's Next
 
 - Backend API with Node.js + Express
 - MongoDB database (replace localStorage)
-- Playwright automated tests
 - GitHub Actions CI/CD pipeline
-- TypeScript depth — typed hooks, reusable types
 
 ---
 
 _Built by a Software QA Engineer learning to build what she used to test._
+```

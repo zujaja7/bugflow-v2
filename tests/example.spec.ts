@@ -159,3 +159,19 @@ test("reset filters shows all bugs again", async ({ page }) => {
   await expect(page.getByText("High bug")).toBeVisible();
   await expect(page.getByText("Low bug")).toBeVisible();
 });
+
+test("shows empty state when no bugs match search", async ({ page }) => {
+  await createBug(
+    page,
+    "Login bug",
+    "Description",
+    "High",
+    "P1",
+    "Open",
+    "1 hr",
+  );
+
+  await page.getByPlaceholder("Search issues...").fill("not found");
+
+  await expect(page.getByText("No results found")).toBeVisible();
+});
